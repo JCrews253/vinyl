@@ -17,7 +17,8 @@
   },
   "dependencies": {
     "@types/config": "^3.3.0",
-    "config": "^3.3.9",
-    "discord.js": "^14.7.1"
+    "discord.js": "^14.7.1",
+    "dotenv": "^16.0.3",
+    "lavaclient": "^4.1.1"
   }
 }

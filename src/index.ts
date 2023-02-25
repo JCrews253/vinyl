@@ -1,61 +1,58 @@
 import {
-  Application,
-  Client,
-  Collection,
+  CacheType,
   Events,
   GatewayIntentBits,
+  Interaction,
   REST,
   Routes,
 } from "discord.js";
-import config from "config";
-
 import VinylClient from "./utils/VinylClient";
+import * as dotenv from "dotenv";
 
-const token = config.get<string>("token");
+dotenv.config();
+// dotenv.config({ path: `.env.local`, override: true });
+
+const TOKEN = process.env.TOKEN;
+if (!TOKEN) {
+  throw new Error("Expected token but process.env.TOKEN was undefined");
+}
 
 const client = new VinylClient({
   intents: [GatewayIntentBits.Guilds],
 });
 
-const commands = [
-  {
-    name: "play",
-    description: "Replies with Pong!",
-  },
-];
+// const rest = new REST({ version: "10" }).setToken(TOKEN);
 
-const rest = new REST({ version: "10" }).setToken(token);
+// (async () => {
+//   try {
+//     console.log("Started refreshing application (/) commands.");
 
-(async () => {
-  try {
-    console.log("Started refreshing application (/) commands.");
+//     const commandData: any = [];
+//     client.commands.forEach((command) =>
+//       commandData.push(command.data.toJSON())
+//     );
 
-    await rest.put(Routes.applicationCommands("773721125871812622"), {
-      body: commands,
-    });
+//     await rest.put(Routes.applicationCommands("773721125871812622"), {
+//       body: commandData,
+//     });
 
-    console.log("Successfully reloaded application (/) commands.");
-  } catch (error) {
-    console.error(error);
-  }
-})();
+//     console.log("Successfully reloaded application (/) commands.");
+//   } catch (error) {
+//     console.error(error);
+//   }
+// })();
 
-client.once(Events.ClientReady, (c) => {
+client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
+  await client.musicPlayer.startManager(c.user.id);
 });
 
-client.on("messageCreate", async (message) => {
-  if (message.content.startsWith(".")) {
-    await message.reply("testing");
-  }
-});
-
-client.on("interactionCreate", async (interaction) => {
+client.on("interactionCreate", async (interaction: Interaction<CacheType>) => {
   if (!interaction.isChatInputCommand()) return;
   const command = client.commands.get(interaction.commandName);
   if (command) {
-    await command.execute(interaction);
+    await command.execute(client, interaction);
   }
 });
 
-client.login(token);
+client.login(TOKEN);

@@ -1,15 +1,35 @@
 import { Client, Collection } from "discord.js";
 import fs from "fs";
+import { Node } from "lavaclient";
 import path from "path";
 import { Command } from "src/Command";
+import { MusicPlayer } from "./MusicPlayer";
 
 export default class VinylClient extends Client {
-  commands: Collection<string, Command>; // use correct type :)
+  commands: Collection<string, Command>;
+  musicPlayer: MusicPlayer;
+  music: Node;
+
   constructor(options: any) {
     super(options);
     this.commands = new Collection();
+    this.musicPlayer = new MusicPlayer();
     this.loadCommands();
+    this.music = new Node({
+      sendGatewayPayload: (id, payload) =>
+        this.guilds.cache.get(id)?.shard?.send(payload),
+      connection: {
+        host: "0.0.0.0",
+        password: "youshallnotpass",
+        port: 2333,
+      },
+    });
+
+    this.music.on("error", (err) => console.log({ err }));
+    this.music.on("debug", (debug) => console.log({ debug }));
+    this.music.on("connect", (connect) => console.log({ connect }));
   }
+
   loadCommands() {
     const commandsPath = path.join(__dirname, "../commands");
     console.log({ commandsPath });
