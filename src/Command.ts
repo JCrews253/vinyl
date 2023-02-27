@@ -1,5 +1,5 @@
 import { CacheType, Interaction, SlashCommandBuilder } from "discord.js";
-import VinylClient from "./utils/VinylClient";
+import VinylClient from "./client/VinylClient";
 
 export interface Command {
   data: SlashCommandBuilder;

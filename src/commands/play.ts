@@ -16,16 +16,45 @@ module.exports = {
   async execute(client, interaction: ChatInputCommandInteraction<CacheType>) {
     const request = interaction.options.getString("request");
     if (!request) {
-      throw new Error("Expected to receive a request but was null");
+      throw new Error("Expected to receive a request but was null.");
     }
 
-    const player = client.music.players.get(interaction.guild!.id);
-    console.log({ player });
-    const guild = client.guilds.cache.get(interaction.guild!.id);
-    const member = guild!.members.cache.get(interaction.member!.user.id);
-    const voiceChannel = member!.voice.channel;
-    player?.connect(voiceChannel!.id);
-    await client.musicPlayer.play(interaction.guild!.id, request);
+    const guildID = interaction.guild?.id;
+    if (!guildID) {
+      await interaction.reply("Couldn't find guild ID for request.");
+      return;
+    }
+
+    const guild = client.guilds.cache.get(guildID);
+    const member = guild?.members.cache.get(interaction.member!.user.id);
+    const voiceChannel = member?.voice.channel;
+    if (!voiceChannel) {
+      await interaction.reply(
+        "You must join a voice channel to request a song."
+      );
+      return;
+    }
+    let player = client.musicPlayer.lavaclient.players.get(guildID);
+    if (!player) {
+      player = client.musicPlayer.lavaclient.createPlayer(guildID);
+    }
+
+    if (!player.connected) {
+      await player.connect(voiceChannel.id);
+    }
+
+    if (player.playing && voiceChannel.id !== player.channelId) {
+      await interaction.reply(
+        "You must join the bot's current voice channel to request."
+      );
+      return;
+    }
+
+    const result = await client.musicPlayer.lavaclient.rest.loadTracks(
+      /^https?:\/\//.test(request) ? request : `ytsearch:${request}`
+    );
+
+    await player.play(result.tracks[0]);
 
     await interaction.reply(
       `${interaction.user.username} requested: ${request}`

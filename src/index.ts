@@ -6,7 +6,7 @@ import {
   REST,
   Routes,
 } from "discord.js";
-import VinylClient from "./utils/VinylClient";
+import VinylClient from "./client/VinylClient";
 import * as dotenv from "dotenv";
 
 dotenv.config();
@@ -18,33 +18,38 @@ if (!TOKEN) {
 }
 
 const client = new VinylClient({
-  intents: [GatewayIntentBits.Guilds],
+  intents: [
+    GatewayIntentBits.Guilds, // for guild related things
+    GatewayIntentBits.GuildMembers, // for guild members related things
+    GatewayIntentBits.GuildIntegrations, // for discord Integrations
+    GatewayIntentBits.GuildVoiceStates, // for voice related things
+  ],
 });
 
-// const rest = new REST({ version: "10" }).setToken(TOKEN);
+const rest = new REST({ version: "10" }).setToken(TOKEN);
 
-// (async () => {
-//   try {
-//     console.log("Started refreshing application (/) commands.");
+(async () => {
+  try {
+    console.log("Started refreshing application (/) commands.");
 
-//     const commandData: any = [];
-//     client.commands.forEach((command) =>
-//       commandData.push(command.data.toJSON())
-//     );
+    const commandData: any = [];
+    client.commands.forEach((command) =>
+      commandData.push(command.data.toJSON())
+    );
 
-//     await rest.put(Routes.applicationCommands("773721125871812622"), {
-//       body: commandData,
-//     });
+    await rest.put(Routes.applicationCommands("773721125871812622"), {
+      body: commandData,
+    });
 
-//     console.log("Successfully reloaded application (/) commands.");
-//   } catch (error) {
-//     console.error(error);
-//   }
-// })();
+    console.log("Successfully reloaded application (/) commands.");
+  } catch (error) {
+    console.error(error);
+  }
+})();
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
-  await client.musicPlayer.startManager(c.user.id);
+  await client.musicPlayer.lavaclient.connect(c.user.id);
 });
 
 client.on("interactionCreate", async (interaction: Interaction<CacheType>) => {

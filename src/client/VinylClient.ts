@@ -1,4 +1,4 @@
-import { Client, Collection } from "discord.js";
+import { Client, Collection, GatewayDispatchEvents } from "discord.js";
 import fs from "fs";
 import { Node } from "lavaclient";
 import path from "path";
@@ -7,27 +7,32 @@ import { MusicPlayer } from "./MusicPlayer";
 
 export default class VinylClient extends Client {
   commands: Collection<string, Command>;
+  // music: Node;
   musicPlayer: MusicPlayer;
-  music: Node;
 
   constructor(options: any) {
     super(options);
     this.commands = new Collection();
-    this.musicPlayer = new MusicPlayer();
     this.loadCommands();
-    this.music = new Node({
-      sendGatewayPayload: (id, payload) =>
-        this.guilds.cache.get(id)?.shard?.send(payload),
-      connection: {
-        host: "0.0.0.0",
-        password: "youshallnotpass",
-        port: 2333,
-      },
-    });
+    this.musicPlayer = new MusicPlayer(this.guilds);
+    // this.music = new Node({
+    //   sendGatewayPayload: (id, payload) => {
+    //     this.guilds.cache.get(id)?.shard?.send(payload);
+    //   },
+    //   connection: {
+    //     host: "0.0.0.0",
+    //     password: "youshallnotpass",
+    //     port: 2333,
+    //   },
+    // });
 
-    this.music.on("error", (err) => console.log({ err }));
-    this.music.on("debug", (debug) => console.log({ debug }));
-    this.music.on("connect", (connect) => console.log({ connect }));
+    // this.music.on("error", (err) => console.log({ err }));
+    this.ws.on(GatewayDispatchEvents.VoiceServerUpdate, async (data) => {
+      await this.musicPlayer.lavaclient.handleVoiceUpdate(data);
+    });
+    this.ws.on(GatewayDispatchEvents.VoiceStateUpdate, async (data) => {
+      await this.musicPlayer.lavaclient.handleVoiceUpdate(data);
+    });
   }
 
   loadCommands() {
