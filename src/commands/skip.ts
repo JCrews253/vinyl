@@ -37,6 +37,8 @@ module.exports = {
       return;
     }
 
+    const track = player.trackData?.title;
     await player.stop();
+    await interaction.reply(`Skipping: ${track}}`);
   },
 } as Command;

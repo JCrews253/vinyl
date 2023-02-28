@@ -53,11 +53,12 @@ module.exports = {
     const result = await client.musicPlayer.lavaclient.rest.loadTracks(
       /^https?:\/\//.test(request) ? request : `ytsearch:${request}`
     );
+    const track = result.tracks[0];
 
-    await player.play(result.tracks[0]);
+    await player.play(track);
 
     await interaction.reply(
-      `${interaction.user.username} requested: ${request}`
+      `${interaction.user.username} requested: ${track.info.title}`
     );
   },
 } as Command;
