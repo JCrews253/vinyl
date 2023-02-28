@@ -18,7 +18,5 @@ jobs:
             rm -rf vinyl 
             git clone https://github.com/JCrews253/vinyl.git
             cd vinyl
-            java -jar Lavalink.jar &
-            sleep 15
-            node build/index.js &
+            npm build
             echo 'Deployment successful to digital ocean' 
