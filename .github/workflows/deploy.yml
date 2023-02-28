@@ -26,5 +26,5 @@ jobs:
             EOF
             npm install
             npm run build
-            nohup node build/index.js &
+            nohup node build/index.js </dev/null &>/dev/null &
             echo 'Deployment successful to digital ocean' 
