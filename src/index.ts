@@ -10,7 +10,6 @@ import VinylClient from "./client/VinylClient";
 import * as dotenv from "dotenv";
 
 dotenv.config();
-// dotenv.config({ path: `.env.local`, override: true });
 
 const TOKEN = process.env.TOKEN;
 if (!TOKEN) {
@@ -37,7 +36,7 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
       commandData.push(command.data.toJSON())
     );
 
-    await rest.put(Routes.applicationCommands("773721125871812622"), {
+    await rest.put(Routes.applicationCommands("910263305900277791"), {
       body: commandData,
     });
 

@@ -34,31 +34,13 @@ module.exports = {
       );
       return;
     }
-    let player = client.musicPlayer.lavaclient.players.get(guildID);
-    if (!player) {
-      player = client.musicPlayer.lavaclient.createPlayer(guildID);
-    }
 
-    if (!player.connected) {
-      await player.connect(voiceChannel.id);
-    }
-
-    if (player.playing && voiceChannel.id !== player.channelId) {
-      await interaction.reply(
-        "You must join the bot's current voice channel to request."
-      );
-      return;
-    }
-
-    const result = await client.musicPlayer.lavaclient.rest.loadTracks(
-      /^https?:\/\//.test(request) ? request : `ytsearch:${request}`
+    const response = await client.musicPlayer.play(
+      request,
+      guildID,
+      voiceChannel.id
     );
-    const track = result.tracks[0];
 
-    await player.play(track);
-
-    await interaction.reply(
-      `${interaction.user.username} requested: ${track.info.title}`
-    );
+    await interaction.reply(response);
   },
 } as Command;

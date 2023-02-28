@@ -11,7 +11,7 @@ module.exports = {
     .setDescription("Gets the current queue"),
 
   async execute(client, interaction: ChatInputCommandInteraction<CacheType>) {
-    // const queue = client.music.getQueue(interaction.guild!.id);
-    // await interaction.reply(queue.join("\n"));
+    const queue = client.musicPlayer.getQueue(interaction.guild!.id);
+    await interaction.reply(queue.join("\n"));
   },
 } as Command;

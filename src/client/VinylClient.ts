@@ -7,7 +7,6 @@ import { MusicPlayer } from "./MusicPlayer";
 
 export default class VinylClient extends Client {
   commands: Collection<string, Command>;
-  // music: Node;
   musicPlayer: MusicPlayer;
 
   constructor(options: any) {
@@ -15,18 +14,7 @@ export default class VinylClient extends Client {
     this.commands = new Collection();
     this.loadCommands();
     this.musicPlayer = new MusicPlayer(this.guilds);
-    // this.music = new Node({
-    //   sendGatewayPayload: (id, payload) => {
-    //     this.guilds.cache.get(id)?.shard?.send(payload);
-    //   },
-    //   connection: {
-    //     host: "0.0.0.0",
-    //     password: "youshallnotpass",
-    //     port: 2333,
-    //   },
-    // });
 
-    // this.music.on("error", (err) => console.log({ err }));
     this.ws.on(GatewayDispatchEvents.VoiceServerUpdate, async (data) => {
       await this.musicPlayer.lavaclient.handleVoiceUpdate(data);
     });
