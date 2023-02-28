@@ -16,6 +16,13 @@ if (!TOKEN) {
   throw new Error("Expected token but process.env.TOKEN was undefined");
 }
 
+const DISCORD_APPLICATION_ID = process.env.DISCORD_APPLICATION_ID;
+if (!DISCORD_APPLICATION_ID) {
+  throw new Error(
+    "Expected DISCORD_APPLICATION_ID but process.env.DISCORD_APPLICATION_ID was undefined"
+  );
+}
+
 const client = new VinylClient({
   intents: [
     GatewayIntentBits.Guilds, // for guild related things
@@ -36,7 +43,7 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
       commandData.push(command.data.toJSON())
     );
 
-    await rest.put(Routes.applicationCommands("910263305900277791"), {
+    await rest.put(Routes.applicationCommands(DISCORD_APPLICATION_ID), {
       body: commandData,
     });
 
