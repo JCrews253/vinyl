@@ -20,7 +20,9 @@ jobs:
             cd vinyl
             touch .env
             cat << EOF >.env
-            token=${{secrets.DISCORD_TOKEN}}
+            TOKEN=${{secrets.DISCORD_TOKEN}}
+            LAVA_HOST=${{secrets.LAVA_HOST}}
+            LAVA_PASS=${{secrets.LAVA_PASS}}
             EOF
             npm install
             npm run build
