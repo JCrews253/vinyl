@@ -18,6 +18,10 @@ jobs:
             rm -rf vinyl 
             git clone https://github.com/JCrews253/vinyl.git
             cd vinyl
+            touch .env
+            cat << EOF >.env
+            token=${{secrets.DISCORD_TOKEN}}
+            EOF
             npm install
             npm run build
             echo 'Deployment successful to digital ocean' 
