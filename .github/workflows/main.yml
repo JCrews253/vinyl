@@ -1,22 +1,37 @@
-name: Deploy to DigitalOcean Droplet
-'on':
-  push:
-    branches:
-      - main
-
+name: CI
+on: [push, pull_request]
 jobs:
+  # test:
+  #   ...
   deploy:
+    name: "Deploy to staging"
     runs-on: ubuntu-latest
+    if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+    # needs: test
     steps:
-      - name: Deploy to DigitalOcean Droplet
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{secrets.HOST}}
-          username: ${{secrets.USERNAME}}
-          key: ${{secrets.KEY}}
-          script: |
-            rm -rf test
-            mkdir test
-            cd test
-            git clone git@github.com:username/projectname
-            echo 'Deployment to digital ocean finished'
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh/
+          echo "$SSH_KEY" > ~/.ssh/staging.key
+          chmod 600 ~/.ssh/staging.key
+          cat >>~/.ssh/config <<END
+          Host staging
+            HostName $SSH_HOST
+            User $SSH_USER
+            IdentityFile ~/.ssh/staging.key
+            StrictHostKeyChecking no
+          END
+        env:
+          SSH_USER: ${{ secrets.USERNAME }}
+          SSH_KEY: ${{ secrets.KEY }}
+          SSH_HOST: ${{ secrets.HOST }}
+
+      - name: Stop the server
+        run: ssh staging 'sudo systemctl stop my-application'
+
+      - name: Check out the source
+        run: ssh staging 'cd my-application && git fetch && git reset --hard origin/master'
+
+      - name: Start the server
+        if: ${{ always() }}
+        run: ssh staging 'sudo systemctl start my-application'
