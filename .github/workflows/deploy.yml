@@ -15,7 +15,6 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }} # User of the server you want to ssh into
      
           script: |
-            mkdir vinyl 
-            cd vinyl 
+            rm -rf vinyl 
             git clone https://github.com/JCrews253/vinyl.git
             echo 'Deployment successful to digital ocean' 
