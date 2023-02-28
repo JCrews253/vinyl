@@ -18,5 +18,6 @@ jobs:
             rm -rf vinyl 
             git clone https://github.com/JCrews253/vinyl.git
             cd vinyl
-            npm build
+            npm install
+            npm run build
             echo 'Deployment successful to digital ocean' 
