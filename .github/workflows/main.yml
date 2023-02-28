@@ -1,35 +1,17 @@
-name: CI
-on: [push, pull_request]
+name: Command via SSH
+
+on: push
+
 jobs:
-  # test:
-  #   ...
-  deploy:
-    name: "Deploy to staging"
+  build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh/
-          echo "$SSH_KEY" > ~/.ssh/staging.key
-          chmod 600 ~/.ssh/staging.key
-          cat >>~/.ssh/config <<END
-          Host staging
-            HostName $SSH_HOST
-            User $SSH_USER
-            IdentityFile ~/.ssh/staging.key
-            StrictHostKeyChecking no
-          END
-        env:
-          SSH_USER: ${{ secrets.USERNAME }}
-          SSH_KEY: ${{ secrets.KEY }}
-          SSH_HOST: ${{ secrets.HOST }}
-
-      - name: Stop the server
-        run: ssh staging 'killall node'
-
-      - name: Check out the source
-        run: ssh staging 'cd vinyl && git fetch && git reset --hard origin/master'
-
-      - name: Start the server
-        if: ${{ always() }}
-        run: ssh staging 'sudo systemctl start my-application'
+      - name: ls -a via OPEN SSH Private Key
+        uses: garygrossgarten/github-action-ssh@release
+        with:
+          command: ls -a
+          host: ${{ secrets.HOST }}
+          username: root
+          password: ${{ secrets.PASSPHRASE }}
+          privateKey: ${{ secrets.KEY}}
