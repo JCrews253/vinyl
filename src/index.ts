@@ -67,7 +67,7 @@ client.on("interactionCreate", async (interaction: Interaction<CacheType>) => {
       const member = guild?.members.cache.get(interaction.member!.user.id);
       const voiceChannel = member?.voice.channel;
       await client.musicPlayer.play(
-        "havana",
+        "https://www.youtube.com/watch?v=HCjNJDNzw8Y",
         guild?.id ?? "",
         voiceChannel?.id ?? ""
       );
