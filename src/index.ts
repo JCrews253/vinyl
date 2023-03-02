@@ -8,6 +8,7 @@ import {
 } from "discord.js";
 import VinylClient from "./client/VinylClient";
 import * as dotenv from "dotenv";
+import { buttonHandler } from "./utils/buttonHandler";
 
 dotenv.config();
 
@@ -39,9 +40,12 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
     console.log("Started refreshing application (/) commands.");
 
     const commandData: any = [];
-    client.commands.forEach((command) =>
-      commandData.push(command.data.toJSON())
-    );
+    client.commands.forEach((command) => {
+      // hack to override readonly name
+      const d = JSON.parse(JSON.stringify(command.data));
+      d.name = "dev" + d.name;
+      commandData.push(d);
+    });
 
     await rest.put(Routes.applicationCommands(DISCORD_APPLICATION_ID), {
       body: commandData,
@@ -62,31 +66,7 @@ client.on("interactionCreate", async (interaction: Interaction<CacheType>) => {
   if (!interaction.isChatInputCommand() && !interaction.isButton()) return;
 
   if (interaction.isButton()) {
-    if (interaction.customId === "havana-button") {
-      const guild = client.guilds.cache.get(interaction.guildId ?? "");
-      const member = guild?.members.cache.get(interaction.member!.user.id);
-      const voiceChannel = member?.voice.channel;
-      await client.musicPlayer.play(
-        "https://www.youtube.com/watch?v=HCjNJDNzw8Y",
-        guild?.id ?? "",
-        voiceChannel?.id ?? ""
-      );
-      await interaction.reply("Havana added to queue.");
-      await interaction.deleteReply();
-    } else if (interaction.customId === "katie-noel") {
-      const guild = client.guilds.cache.get(interaction.guildId ?? "");
-      const member = guild?.members.cache.get(interaction.member!.user.id);
-      const voiceChannel = member?.voice.channel;
-      await client.musicPlayer.play(
-        "https://www.youtube.com/watch?v=rLe_yn7Uq14",
-        guild?.id ?? "",
-        voiceChannel?.id ?? ""
-      );
-      await interaction.reply(
-        "https://www.youtube.com/watch?v=rLe_yn7Uq14 added to queue."
-      );
-      await interaction.deleteReply();
-    }
+    await buttonHandler(client, interaction);
     return;
   }
 
@@ -97,8 +77,6 @@ client.on("interactionCreate", async (interaction: Interaction<CacheType>) => {
 });
 
 client.on("messageCreate", async (message) => {
-  if (message.author.bot) return;
-
   // if controls on send button controls again
 });
 

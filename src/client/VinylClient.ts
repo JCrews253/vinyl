@@ -1,6 +1,5 @@
 import { Client, Collection, GatewayDispatchEvents } from "discord.js";
 import fs from "fs";
-import { Node } from "lavaclient";
 import path from "path";
 import { Command } from "src/Command";
 import { MusicPlayer } from "./MusicPlayer";
@@ -37,7 +36,11 @@ export default class VinylClient extends Client {
       const command = require(filePath);
       // Set a new item in the Collection with the key as the command name and the value as the exported module
       if ("data" in command && "execute" in command) {
-        this.commands.set(command.data.name, command);
+        if (process.env.NODE_ENV === "production") {
+          this.commands.set(command.data.name, command);
+        } else {
+          this.commands.set("dev" + command.data.name, command);
+        }
       } else {
         console.log(
           `[WARNING] The command at ${filePath} is missing a required "data" or "execute" property.`

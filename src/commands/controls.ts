@@ -32,15 +32,16 @@ module.exports = {
 
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
-        .setCustomId("havana-button")
+        .setCustomId("havana")
         .setLabel("Havana")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
-        .setCustomId("katie-noel")
-        .setEmoji("🔥")
+        .setCustomId("hide-controls")
+        .setLabel("Hide")
         .setStyle(ButtonStyle.Primary)
     );
 
-    await interaction.reply({ components: [row] });
+    await interaction.reply({ content: "Controls", components: [row] });
+    client.musicPlayer.setControls(interaction.guildId!, true);
   },
 } as Command;

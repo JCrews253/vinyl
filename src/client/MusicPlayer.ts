@@ -10,9 +10,11 @@ type Track = {
 export class MusicPlayer {
   readonly lavaclient: Lavaclient;
   private queue: Map<string, Track[]>;
+  readonly showControls: Map<string, boolean>;
 
   constructor(guildManager: GuildManager) {
     this.queue = new Map();
+    this.showControls = new Map();
     this.lavaclient = new Lavaclient({
       sendGatewayPayload: (id, payload) => {
         guildManager.cache.get(id)?.shard?.send(payload);
@@ -27,7 +29,9 @@ export class MusicPlayer {
     this.lavaclient.on("error", (err) => console.log({ err }));
   }
 
-  async startManager(userID: string) {}
+  setControls(guildID: string, value: boolean) {
+    this.showControls.set(guildID, value);
+  }
 
   async play(
     request: string,
