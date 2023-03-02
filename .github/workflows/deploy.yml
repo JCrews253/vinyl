@@ -25,6 +25,7 @@ jobs:
             DISCORD_APPLICATION_ID=${{secrets.DISCORD_APPLICATION_ID}}
             LAVA_HOST=${{secrets.LAVA_HOST}}
             LAVA_PASS=${{secrets.LAVA_PASS}}
+            NODE_ENV=production
             EOF
             npm install
             npm run build
