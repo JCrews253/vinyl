@@ -41,9 +41,11 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 
     const commandData: any = [];
     client.commands.forEach((command) => {
-      // hack to override readonly name
       const d = JSON.parse(JSON.stringify(command.data));
-      d.name = "dev" + d.name;
+      if (process.env.NODE_ENV !== "production") {
+        // hack to override readonly name
+        d.name = "dev" + d.name;
+      }
       commandData.push(d);
     });
 
