@@ -2,6 +2,7 @@ import { ButtonInteraction, CacheType } from "discord.js";
 import { havana } from "../buttonCommand/havana";
 import { hideControls } from "../buttonCommand/hideControls";
 import VinylClient from "src/client/VinylClient";
+import { cheeseTax } from "../buttonCommand/cheeseTax";
 
 enum ButtonActions {
   Havana = "havana",
@@ -17,5 +18,7 @@ export async function buttonHandler(
     await havana(client, interaction);
   } else if (interaction.customId === "hide-controls") {
     await hideControls(client, interaction);
+  } else if (interaction.customId === "cheese-tax") {
+    await cheeseTax(client, interaction);
   }
 }

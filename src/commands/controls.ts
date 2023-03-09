@@ -20,20 +20,14 @@ module.exports = {
       return;
     }
 
-    const guild = client.guilds.cache.get(guildID);
-    const member = guild?.members.cache.get(interaction.member!.user.id);
-    const voiceChannel = member?.voice.channel;
-    if (!voiceChannel) {
-      await interaction.reply(
-        "You must join a voice channel to open controls."
-      );
-      return;
-    }
-
     const row = new ActionRowBuilder<ButtonBuilder>().addComponents(
       new ButtonBuilder()
         .setCustomId("havana")
         .setLabel("Havana")
+        .setStyle(ButtonStyle.Primary),
+      new ButtonBuilder()
+        .setCustomId("cheese-tax")
+        .setEmoji("🧀")
         .setStyle(ButtonStyle.Primary),
       new ButtonBuilder()
         .setCustomId("hide-controls")
