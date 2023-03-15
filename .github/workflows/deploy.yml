@@ -24,6 +24,9 @@ jobs:
             DISCORD_APPLICATION_ID=${{secrets.DISCORD_APPLICATION_ID}}
             LAVA_HOST=${{secrets.LAVA_HOST}}
             LAVA_PASS=${{secrets.LAVA_PASS}}
+            SSH_HOST=${{secrets.SSH_HOST}}
+            SSH_KEY=${{secrets.SSH_KEY}}
+            SSH_USERNAME=${{secrets.SSH_USERNAME}}
             NODE_ENV=production
             EOF
             npm install
