@@ -11,6 +11,7 @@ import * as dotenv from "dotenv";
 import { buttonHandler } from "./utils/buttonHandler";
 
 dotenv.config();
+process.title = "vinyl";
 
 const TOKEN = process.env.TOKEN;
 if (!TOKEN) {
