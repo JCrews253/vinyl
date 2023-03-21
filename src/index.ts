@@ -83,4 +83,21 @@ client.on("messageCreate", async (message) => {
   // if controls on send button controls again
 });
 
+client.on('voiceStateUpdate', (oldState, newState) => {
+  console.log("voice state update");
+  if (newState.channel !== null && 
+    newState.member?.user.tag == "Snort#6936") {
+    console.log("correct user and channel data not null");
+      
+    if (newState.channel.id !== null && oldState.channel === null) {
+      console.log("user joined voice channel");
+      client.musicPlayer.play(
+        "https://www.youtube.com/watch?v=2D-ZO2rGcSA",
+        newState.guild.id,
+        newState.channel.id
+      );
+    }
+  }
+});
+
 client.login(TOKEN);
