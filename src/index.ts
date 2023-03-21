@@ -83,4 +83,19 @@ client.on("messageCreate", async (message) => {
   // if controls on send button controls again
 });
 
+client.on('voiceStateUpdate', (oldState, newState) => {
+  console.log("voice state update")
+  if (newState.channel !== null && oldState.channel !== null && 
+    newState.member?.user.tag == "Snort#6936") {
+      
+    if (newState.channel.id !== null && oldState.channel.id === null) {
+      client.musicPlayer.play(
+        "https://www.youtube.com/watch?v=2D-ZO2rGcSA",
+        newState.guild.id,
+        newState.channel.id
+      );
+    }
+  }
+});
+
 client.login(TOKEN);
