@@ -63,13 +63,13 @@ const rest = new REST({ version: "10" }).setToken(TOKEN);
 
 client.once(Events.ClientReady, async (c) => {
   console.log(`Ready! Logged in as ${c.user.tag}`);
-  exec("java -jar lavalink.jar", (error, stdout, stderr) => {
-    console.log("stdout: " + stdout);
-    console.log("stderr: " + stderr);
-    if (error !== null) {
-      console.log("exec error: " + error);
-    }
-  });
+  // exec("java -jar lavalink.jar", (error, stdout, stderr) => {
+  //   console.log("stdout: " + stdout);
+  //   console.log("stderr: " + stderr);
+  //   if (error !== null) {
+  //     console.log("exec error: " + error);
+  //   }
+  // });
   // wait for lavalink to start
   await new Promise((res) => setTimeout(() => res(null), 10000));
   await client.musicPlayer.lavaclient.connect(c.user.id);

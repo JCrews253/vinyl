@@ -30,7 +30,6 @@ const discord_js_1 = require("discord.js");
 const VinylClient_1 = __importDefault(require("./client/VinylClient"));
 const dotenv = __importStar(require("dotenv"));
 const buttonHandler_1 = require("./utils/buttonHandler");
-const child_process_1 = require("child_process");
 dotenv.config();
 process.title = "vinyl";
 const TOKEN = process.env.TOKEN;
@@ -72,13 +71,6 @@ const rest = new discord_js_1.REST({ version: "10" }).setToken(TOKEN);
 })();
 client.once(discord_js_1.Events.ClientReady, async (c) => {
     console.log(`Ready! Logged in as ${c.user.tag}`);
-    (0, child_process_1.exec)("java -jar lavalink.jar", (error, stdout, stderr) => {
-        console.log("stdout: " + stdout);
-        console.log("stderr: " + stderr);
-        if (error !== null) {
-            console.log("exec error: " + error);
-        }
-    });
     await new Promise((res) => setTimeout(() => res(null), 10000));
     await client.musicPlayer.lavaclient.connect(c.user.id);
 });
