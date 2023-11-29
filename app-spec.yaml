@@ -1,0 +1,24 @@
+name: vinyl
+services:
+  - name: vinyl
+    github:
+      repo: owner/repo
+      branch: main
+    spec:
+      environment_slug: "java"
+      instance_count: 1
+      autoscaling:
+        min_instance_count: 1
+        max_instance_count: 1
+      routes:
+        - path: "/"
+          environment_id: web-1
+      build:
+        environment:
+          java_version: "17" # Specify the Java version you want
+        script: |
+          # Add your build commands here
+          ./gradlew build # Example build command for a Gradle-based project
+      run:
+        environment:
+        command: java -jar lavalink.jar # Replace with your Java application start command
